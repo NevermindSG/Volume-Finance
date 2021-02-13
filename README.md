@@ -37,7 +37,6 @@ sns.barplot(data=SP500.loc[:,"Volume"]\
 
 
 #print(SP500["Volume"].rolling(250).mean().plot())
-# rotate the labels
 label1 = ax1.set_xticklabels(ax1.get_xticklabels(), rotation = 90,fontsize=5,alpha=0.5)
 ax1.set_title("S&P500", fontsize=7)
 
