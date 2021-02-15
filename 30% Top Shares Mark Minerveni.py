@@ -27,6 +27,7 @@ index_return = (index_df['Percent Change'] + 1).cumprod()[-1]
 # Find top 30% performing stocks (relative to the S&P 500)
 for ticker in tickers:
     # Download historical data as CSV for each stock (makes the process faster)
+    #try and except should be included for possible delistings
     try:
         df = pdr.get_data_yahoo(ticker, start_date, end_date)
         df.to_csv(f'{ticker}.csv')
