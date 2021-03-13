@@ -1,0 +1,57 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from datetime import datetime as dt, timedelta as td
+from pandas_datareader import data as  pdr
+
+#'--------------------------------------
+#ZUSATZ: automatic request of online data
+#--------------------------------------
+
+
+startyear =2020
+startmonth =1
+startday = 1
+
+datestring = dt.strftime(dt.now(), "%d/%m/%Y")
+
+start = dt(startyear,startmonth,startday) #Set starting time for datesample
+now = dt.now()
+
+
+**asset1 = input("Enter the stock symbol (enter 'quit' to stop):").upper()
+asset2 = input("Enter the stock symbol (enter 'quit' to stop):").upper()**
+
+points_to_plot = 300
+
+fig = plt.figure()
+fig.suptitle("Correlation " + datestring)
+ax1 = fig.add_subplot(1,2,1)
+ax2 = fig.add_subplot(1,2,2)
+ax2.set_ylabel("Correaltion",fontsize = 12)
+ax2.set_xlabel("Days", fontsize = 12)
+#label1 = ax1.set_xticklabels(ax1.get_xticklabels(), rotation = 90,fontsize=5,alpha=0.5)
+ax2.set_title(f"{asset1} & {asset2}, last {points_to_plot} days", fontsize=14)
+ax1.set_title(f"{asset1} & {asset2}, last {points_to_plot} days", fontsize=14)
+
+a1 = pdr.get_data_yahoo(asset1,start,now).reset_index()
+a2 =pdr.get_data_yahoo(asset2,start,now).reset_index()
+
+a1= pd.DataFrame(a1[["Date","Adj Close"]])
+a1.columns =["Date " + asset1, "Adj Close " + asset1]
+
+a2= pd.DataFrame(a2[["Date", "Adj Close"]])
+a2.columns =["Date " + asset2, "Adj Close " + asset2]
+
+asset = pd.concat([a1,a2], axis=1)
+
+correlation_line = asset["Adj Close " + asset1].rolling(50).corr(asset["Adj Close " + asset2])[-300:].plot()
+
+df= pd.DataFrame(asset, columns=["Adj Close "+ asset1, "Adj Close " + asset2])
+print(df)
+corrMatrix = df.corr()
+print(corrMatrix)
+
+sns.heatmap(corrMatrix, annot=True, ax=ax1)
+
+plt.show()
